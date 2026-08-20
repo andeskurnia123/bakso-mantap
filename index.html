@@ -272,6 +272,26 @@
           height: 260px;
       }
 
+      .hero-grid,
+      .about-grid,
+      .contact-grid {
+          grid-template-columns: 1fr;
+      }
+
+      .nav {
+          flex-wrap: wrap;
+          height: auto;
+          padding: 12px 0;
+      }
+
+      .navlinks {
+          display: none;
+      }
+
+      .nav-actions {
+          margin-left: auto;
+      }
+
   }
 
 
@@ -280,6 +300,44 @@
     ========================================================== */
 
   @media (max-width: 600px) {
+
+      .container {
+          width: min(92%, 100%);
+      }
+
+      .topbar .container {
+          flex-direction: column;
+          text-align: center;
+          gap: 6px;
+      }
+
+      .nav {
+          height: auto;
+          padding: 12px 0;
+          gap: 10px;
+          flex-wrap: wrap;
+      }
+
+      .brand strong {
+          font-size: 1.05rem;
+      }
+
+      .hero {
+          padding-top: 26px;
+          padding-bottom: 22px;
+      }
+
+      .hero-card {
+          min-height: 260px;
+          height: 260px;
+      }
+
+      .hero-label {
+          left: 12px;
+          top: 12px;
+          right: 12px;
+          font-size: 0.8rem;
+      }
 
       .menu-grid {
           grid-template-columns: 1fr;
@@ -297,13 +355,41 @@
           font-size: 15px;
       }
 
+      .card .price-row {
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
       .card .price {
           font-size: 20px;
       }
 
       .card .add {
+          width: 100%;
           padding: 12px 16px;
           font-size: 14px;
+      }
+
+      .form-grid {
+          grid-template-columns: 1fr;
+      }
+
+      .modal {
+          padding: 12px;
+      }
+
+      .modal-box {
+          padding: 18px 14px;
+      }
+
+      .qris-code {
+          width: 150px;
+          height: 150px;
+      }
+
+      footer .container {
+          flex-direction: column;
+          align-items: flex-start;
       }
 
   }
@@ -445,9 +531,9 @@
     shippingPerUnit: 200,
     shippingUnitMeters: 100,
 
-    // Koordinat lokasi toko. GANTI sesuai lokasi toko.
-    storeLat: -2.9761,
-    storeLng: 104.7754,
+    // Koordinat lokasi toko yang sudah sesuai dengan alamat asli.
+    storeLat: -5.3191039,
+    storeLng: 104.0053251,
 
     // Gambar QRIS toko.
     qrisImage: "image/qris.jpeg"
@@ -712,18 +798,32 @@
     return earthRadius * c;
   }
 
+  let liveLocationWatchId = null;
+
   function getCustomerLocation(){
     if(!navigator.geolocation){
       document.getElementById("geoStatus").textContent = "Browser Anda tidak mendukung geolocation. Silakan masukkan jarak manual.";
       return;
     }
 
-    document.getElementById("geoStatus").textContent = "Mendeteksi lokasi Anda...";
+    if(liveLocationWatchId !== null){
+      navigator.geolocation.clearWatch(liveLocationWatchId);
+      liveLocationWatchId = null;
+    }
 
-    navigator.geolocation.getCurrentPosition(
+    document.getElementById("geoStatus").textContent = "Mengambil lokasi real-time...";
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    };
+
+    liveLocationWatchId = navigator.geolocation.watchPosition(
       position => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
+        const accuracy = position.coords.accuracy || 0;
         const distance = calculateDistanceMeters(lat, lng, CONFIG.storeLat, CONFIG.storeLng);
         const roundedDistance = Math.max(0, Math.round(distance));
         const distanceInput = document.getElementById("coDistance");
@@ -740,16 +840,16 @@
         }
 
         if(geoStatus){
-          geoStatus.textContent = `Lokasi terdeteksi: ${lat.toFixed(5)}, ${lng.toFixed(5)} — jarak sekitar ${roundedDistance} meter dari toko.`;
+          geoStatus.textContent = `Lokasi real-time: ${lat.toFixed(5)}, ${lng.toFixed(5)} — akurasi ${Math.round(accuracy)} m. Jarak sekitar ${roundedDistance} meter dari toko.`;
         }
       },
       error => {
         const geoStatus = document.getElementById("geoStatus");
         if(geoStatus){
-          geoStatus.textContent = "Akses lokasi ditolak. Silakan masukkan jarak manual atau aktifkan GPS browser.";
+          geoStatus.textContent = "Akses lokasi ditolak. Silakan aktifkan GPS atau masukkan jarak manual.";
         }
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      options
     );
   }
 
