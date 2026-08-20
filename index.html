@@ -516,7 +516,7 @@
     - Keranjang
     - Checkout
     - QRIS
-    - Ongkir Rp200 / 100 meter
+    - Ongkir Rp500 / 100 meter
     - WhatsApp
     - Admin sederhana berbasis localStorage
     ========================================================== */
@@ -527,8 +527,8 @@
     adminEmail: "admin@baksomantap.id",
     adminPassword: "baksomantap123",
 
-    // Ongkir: Rp200 setiap 100 meter.
-    shippingPerUnit: 200,
+    // Ongkir: Rp500 setiap 100 meter.
+    shippingPerUnit: 500,
     shippingUnitMeters: 100,
 
     // Koordinat lokasi toko yang sudah sesuai dengan alamat asli.
@@ -754,15 +754,15 @@
         <b>📍 Perhitungan ongkir</b>
         <div class="note" style="margin-top:5px">
           Jarak dihitung dari lokasi pelanggan ke toko. Anda juga bisa membuka Google Maps untuk melihat rute langsung.
-          Rp200 untuk setiap 100 meter. Contoh 1 km = Rp2.000.
+          Rp500 untuk setiap 100 meter. Contoh 1 km = Rp5.000.
           Jika jarak bukan kelipatan 100 meter, pembulatan dilakukan ke atas.
         </div>
       </div>
 
       <div class="totalbox">
         <div class="row"><span>Subtotal</span><b id="coSubtotal">${rupiah(subtotal)}</b></div>
-        <div class="row"><span>Ongkir</span><b id="coShipping">${rupiah(200)}</b></div>
-        <div class="row total"><span>Total</span><b id="coTotal">${rupiah(subtotal+200)}</b></div>
+        <div class="row"><span>Ongkir</span><b id="coShipping">${rupiah(500)}</b></div>
+        <div class="row total"><span>Total</span><b id="coTotal">${rupiah(subtotal+500)}</b></div>
       </div>
 
       <div class="payment active">
